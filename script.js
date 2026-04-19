@@ -1,21 +1,27 @@
-const html = document.querySelector("html"); // Seleciona o elemento HTML para alterar o atributo data-contexto
-const focobt = document.querySelector(".app__card-button--foco"); // Seleciona o botão de foco
-const curtobt = document.querySelector(".app__card-button--curto"); // Seleciona o botão de descanso curto
-const longobt = document.querySelector(".app__card-button--longo"); // Seleciona o botão de descanso longo
-const banner = document.querySelector(".app__image"); // Seleciona a imagem do banner
-const text = document.querySelector(".app__title"); // Seleciona o título
-const bottons = document.querySelectorAll(".app__card-button"); // Seleciona todos os botões
-const musicInput = document.getElementById("alternar-musica"); // Seleciona o input de música
-const musica = new Audio("./sons/luna-rise-part-one.mp3"); // Cria um objeto de áudio para a música de foco
-const startPauseBt = document.getElementById("start-pause"); // Seleciona o botão de iniciar/pausar
-const audioPause = new Audio("./sons/pause.mp3"); // Cria um objeto de áudio para o som de pausa
-const audioEnd = new Audio("./sons/beep.mp3"); // Cria um objeto de áudio para o som de término
-const audioPlay = new Audio("./sons/play.wav"); // Cria um objeto de áudio para o som de início
-const textBtStartPause = document.querySelector("#start-pause span"); // Seleciona o elemento de texto do botão de iniciar/pausar
-const imgBtStartPause = document.querySelector(".app__card-primary-butto-icon"); // Seleciona a imagem do botão de iniciar/pausar
-const TempoNaTela = document.querySelector("#timer");
+const TEMPO_FOCO = 1500;
 
-let tempoSegundos = 1500; // Define o tempo padrão para foco
+// Elementos da interface
+const html = document.querySelector("html");
+const focoBt = document.querySelector(".app__card-button--foco");
+const curtoBt = document.querySelector(".app__card-button--curto");
+const longoBt = document.querySelector(".app__card-button--longo");
+const botoes = document.querySelectorAll(".app__card-button");
+const banner = document.querySelector(".app__image");
+const text = document.querySelector(".app__title");
+const musicInput = document.getElementById("alternar-musica");
+const startPauseBt = document.getElementById("start-pause");
+const textBtStartPause = document.querySelector("#start-pause span");
+const imgBtStartPause = document.querySelector(".app__card-primary-butto-icon");
+const tempoNaTela = document.querySelector("#timer");
+
+// Audios
+const musica = new Audio("./sounds/luna-rise-part-one.mp3");
+const audioPause = new Audio("./sounds/pause.mp3");
+const audioEnd = new Audio("./sounds/beep.mp3");
+const audioPlay = new Audio("./sounds/play.wav");
+
+// Estado da aplicacao
+let tempoSegundos = TEMPO_FOCO;
 let intervaloId = null;
 
 musicInput.addEventListener("change", () => {
@@ -27,29 +33,29 @@ musicInput.addEventListener("change", () => {
   }
 });
 
-focobt.addEventListener("click", () => {
+focoBt.addEventListener("click", () => {
   alterarContexto("foco"); // Altera o contexto para "foco" e atualiza a interface
-  focobt.classList.add("active");
+  focoBt.classList.add("active");
 });
 
-curtobt.addEventListener("click", () => {
+curtoBt.addEventListener("click", () => {
   alterarContexto("descanso-curto"); // Altera o contexto para "descanso-curto" e atualiza a interface
-  curtobt.classList.add("active");
+  curtoBt.classList.add("active");
 });
 
-longobt.addEventListener("click", () => {
+longoBt.addEventListener("click", () => {
   alterarContexto("descanso-longo"); // Altera o contexto para "descanso-longo" e atualiza a interface
-  longobt.classList.add("active");
+  longoBt.classList.add("active");
 });
 
 function alterarContexto(contexto) {
-  bottons.forEach((botton) => {
+  botoes.forEach((botao) => {
     // Remove a classe "active" de todos os botões
-    botton.classList.remove("active");
+    botao.classList.remove("active");
   });
 
   html.setAttribute("data-contexto", contexto);
-  banner.setAttribute("src", `./imagens/${contexto}.png`);
+  banner.setAttribute("src", `./images/${contexto}.png`);
   switch (contexto) {
     case "foco":
       text.innerHTML =
@@ -78,7 +84,7 @@ const contagemRegressiva = () => {
     audioEnd.play(); // Toca o som de término
     alert("Tempo esgotado!");
     textBtStartPause.textContent = "Começar"; // Altera o texto do botão para "iniciar"
-    imgBtStartPause.setAttribute("src", "./imagens/play_arrow.png"); // Altera a imagem do botão para "iniciar"
+    imgBtStartPause.setAttribute("src", "./images/play_arrow.png"); // Altera a imagem do botão para "iniciar"
     return;
   }
   tempoSegundos--;
@@ -94,12 +100,12 @@ function iniciarOuPausar() {
     pausarContagem(); // Pausa a contagem se já estiver em andamento
     audioPause.play(); // Toca o som de pausa
     textBtStartPause.textContent = "Continuar"; // Altera o texto do botão
-    imgBtStartPause.setAttribute("src", "./imagens/play_arrow.png"); // Altera a imagem do botão para "iniciar"
+    imgBtStartPause.setAttribute("src", "./images/play_arrow.png"); // Altera a imagem do botão para "iniciar"
   } else {
     audioPlay.play(); // Toca o som de início
     intervaloId = setInterval(contagemRegressiva, 1000); // Inicia a contagem regressiva a cada segundo
     textBtStartPause.textContent = "Pausar"; // Altera o texto do botão
-    imgBtStartPause.setAttribute("src", "./imagens/pause.png"); // Altera a imagem do botão para "pausar"
+    imgBtStartPause.setAttribute("src", "./images/pause.png"); // Altera a imagem do botão para "pausar"
   }
 }
 
@@ -114,7 +120,7 @@ function mostrarTempo() {
     minute: "2-digit",
     second: "2-digit",
   });
-  TempoNaTela.innerHTML = `${tempoFormatado}`;
+  tempoNaTela.innerHTML = `${tempoFormatado}`;
 }
 
 mostrarTempo();
