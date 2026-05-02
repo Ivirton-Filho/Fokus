@@ -2,9 +2,14 @@
 const btnAddTarefa = document.querySelector(".app__button--add-task");
 const formAddTarefa = document.querySelector(".app__form-add-task");
 const textArea = document.querySelector(".app__form-textarea");
+const descricaoTarefaAndamento = document.querySelector(
+  ".app__section-active-task-description",
+);
 
 // ----- Estado (localStorage) -----
 const tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+
+let tarefaSelecionada = null; // Variável para armazenar a tarefa atualmente selecionada
 
 // ----- Lista no DOM -----
 const ulTarefas = document.querySelector(".app__section-task-list");
@@ -37,20 +42,42 @@ function criarTarefa(tarefa) {
   buttonEdit.classList.add("app_button-edit");
   buttonEdit.onclick = () => {
     const novaDescricao = prompt("Editar tarefa", tarefa.descricaoTarefa);
-    if(!novaDescricao){
-        alert("A descrição da tarefa não pode ser vazia!");
-        return;
+    if (!novaDescricao) {
+      alert("A descrição da tarefa não pode ser vazia!");
+      return;
     }
     tarefa.descricaoTarefa = novaDescricao;
     atualizarTarefa(novaDescricao);
     location.reload();
   };
 
+  // Icone do botao de editar
   const imgButton = document.createElement("img");
   imgButton.setAttribute("src", "/images/edit.png");
   buttonEdit.append(imgButton);
 
+  // Monta a estrutura do item (icone, texto e botao)
   li.append(svg, paragrafo, buttonEdit);
+
+  // Clique no item: exibe descricao em andamento e alterna estilo ativo
+  li.onclick = () => {
+    document
+      .querySelectorAll(".app__section-task-list-item-active")
+      .forEach((elemento) => {
+        elemento.classList.remove("app__section-task-list-item-active");
+      });
+
+    if (tarefaSelecionada == tarefa) {
+      descricaoTarefaAndamento.textContent = ""; // Limpa a descrição da tarefa em andamento
+      tarefaSelecionada = null; // Deseleciona a tarefa
+      return;
+    }
+    descricaoTarefaAndamento.textContent = tarefa.descricaoTarefa; // Atualiza o texto da tarefa em andamento exibida no topo
+    tarefaSelecionada = tarefa; // Marca a tarefa atual como selecionada
+
+    li.classList.add("app__section-task-list-item-active");
+  };
+
   return li;
 }
 
@@ -79,5 +106,3 @@ tarefas.forEach((tarefa) => {
   const elemento = criarTarefa(tarefa);
   ulTarefas.append(elemento);
 });
-
-// ----- Renderizacao inicial -----
